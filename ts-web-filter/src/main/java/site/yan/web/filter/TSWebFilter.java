@@ -1,27 +1,39 @@
 package site.yan.web.filter;
 
 import org.springframework.stereotype.Component;
+import site.yan.core.adapter.WebFilterAdapter;
+import site.yan.core.data.Record;
+import site.yan.core.trace.Trace;
 
 import javax.servlet.*;
 import java.io.IOException;
 
 @Component
-public class TSWebFilter implements Filter {
+public class TSWebFilter extends WebFilterAdapter {
+
+    private Trace trace;
+    private Record record;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        Trace trace= new Trace();
+        record=trace.getRecord();
+    }
+
+    @Override
+    public void before() {
 
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void after() {
 
-        System.out.println("exe start :" +System.currentTimeMillis());
-        filterChain.doFilter(servletRequest,servletResponse);
-        System.out.println("exe end :" +System.currentTimeMillis());
     }
 
     @Override
     public void destroy() {
 
     }
+
+
 }
