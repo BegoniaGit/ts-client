@@ -7,3 +7,8 @@ spring:
 
 server:
   port: 90
+
+ts:
+  enable: true
+  server-name: haha
+  stage: beta

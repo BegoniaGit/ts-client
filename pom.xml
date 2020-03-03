@@ -19,6 +19,8 @@
         <module>app</module>
         <module>ts-web-filter</module>
         <module>ts-core</module>
+        <module>ts-http-client</module>
+        <module>ts-http-client</module>
     </modules>
 
     <dependencies>

@@ -1,4 +1,4 @@
-package site.yan.app;
+package site.yan.httpclient.yan.app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

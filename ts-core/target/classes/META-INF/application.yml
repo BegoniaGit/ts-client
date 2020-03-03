@@ -1,0 +1,4 @@
+ts:
+  enable: true
+  server-name: haha
+  stage: beta
