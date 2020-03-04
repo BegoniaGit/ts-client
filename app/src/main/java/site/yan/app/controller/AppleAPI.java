@@ -1,8 +1,10 @@
 package site.yan.app.controller;
 
 import org.springframework.web.bind.annotation.*;
-import site.yan.httpclient.HttpClientUtil;
 import site.yan.app.model.Apple;
+import site.yan.httpclient.client.TSHttpClientIN;
+import site.yan.httpclient.client.TSHttpClientOUT;
+import site.yan.httpclient.trace.TSHttpClient;
 
 @RestController
 @RequestMapping("/")
@@ -36,10 +38,8 @@ public class AppleAPI {
 
     @PutMapping("/tri")
     public void taskTrigger() throws Exception {
-        while (true) {
-            String resp = HttpClientUtil.getInstance().sendHttpGet("http://127.0.0.1:90/inner/server");
+            String resp = new TSHttpClientIN().doGet("http://127.0.0.1:90/inner/server");
+            String resp2=new TSHttpClientOUT().doGet("http://www.baidu.com");
             System.out.println(resp);
-            Thread.sleep(5 * 1000);
-        }
     }
 }

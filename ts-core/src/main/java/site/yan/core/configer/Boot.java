@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import site.yan.core.api.ExportAPI;
+import site.yan.core.helper.RecordContextHolder;
 
 @Configuration
 @EnableConfigurationProperties(Properties.class)
@@ -15,5 +16,10 @@ public class Boot {
     @Bean
     public ExportAPI exportAPI(){
         return new ExportAPI();
+    }
+
+    @Bean
+    public RecordContextHolder recordContextHolder(){
+        return new RecordContextHolder();
     }
 }

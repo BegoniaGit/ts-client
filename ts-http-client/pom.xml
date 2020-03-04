@@ -12,6 +12,14 @@
     <artifactId>ts-http-client</artifactId>
 
     <dependencies>
+
+        <dependency>
+            <groupId>site.yan</groupId>
+            <artifactId>ts-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>

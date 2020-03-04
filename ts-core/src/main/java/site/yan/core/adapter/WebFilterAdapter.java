@@ -3,6 +3,7 @@ package site.yan.core.adapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import site.yan.core.configer.Properties;
 
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -16,9 +17,9 @@ public abstract class WebFilterAdapter implements Filter {
 
     private final static String[] traceIgnore = {"/trace"};
 
-    public abstract void before(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain);
+    protected abstract HttpContext before(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain);
 
-    public abstract void after(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain);
+    protected abstract void after(HttpContext httpContext);
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -40,9 +41,9 @@ public abstract class WebFilterAdapter implements Filter {
     }
 
     private void doWebFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        before(servletRequest, servletResponse, filterChain);
+        HttpContext context = before(servletRequest, servletResponse, filterChain);
         filterChain.doFilter(servletRequest, servletResponse);
-        after(servletRequest, servletResponse, filterChain);
+        after(context);
     }
 
     private boolean isNotTraceIgnore(ServletRequest request) {

@@ -6,6 +6,15 @@ public class Host {
     private String address;
     private int port;
 
+    public Host() {
+    }
+
+    public Host(Host host) {
+        this.serverName = host.serverName;
+        this.address = host.address;
+        this.port = host.port;
+    }
+
     public Host(String serverName, String address, int port) {
         this.serverName = serverName;
         this.address = address;
