@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://www.yanyan.site:3306/blog?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://114.116.251.70:3306/ts?statementInterceptors=site.yan.mysql.TSMySQLStatementInterceptor&useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: Ca66771111
 

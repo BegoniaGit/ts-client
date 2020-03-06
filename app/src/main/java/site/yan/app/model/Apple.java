@@ -1,9 +1,16 @@
 package site.yan.app.model;
 
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 public class Apple {
     private String color;
     private double size;
     private double price;
+
+    public Apple() {
+    }
 
     public Apple(String color, double size, double price) {
         this.color = color;

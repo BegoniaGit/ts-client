@@ -20,7 +20,8 @@
         <module>ts-web-filter</module>
         <module>ts-core</module>
         <module>ts-http-client</module>
-        <module>ts-http-client</module>
+        <module>ts-mysql</module>
+        <module>app-test</module>
     </modules>
 
     <dependencies>
@@ -30,11 +31,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
