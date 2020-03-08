@@ -1,8 +1,8 @@
 package site.yan.app.config;
 
 import org.springframework.context.annotation.Bean;
-import site.yan.web.filter.TSWebFilter;
 import org.springframework.context.annotation.Configuration;
+import site.yan.web.filter.TSWebFilter;
 
 import javax.servlet.Filter;
 
@@ -10,7 +10,8 @@ import javax.servlet.Filter;
 public class Start {
 
     @Bean
-    public Filter getFilter(){
+    public Filter getFilter() {
         return new TSWebFilter();
     }
+
 }

@@ -7,6 +7,7 @@ public class Host {
     private int port;
 
     public Host() {
+
     }
 
     public Host(Host host) {

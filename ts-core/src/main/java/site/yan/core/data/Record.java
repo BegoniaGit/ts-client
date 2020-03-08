@@ -1,13 +1,12 @@
 package site.yan.core.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.logging.log4j.util.Strings;
+import site.yan.core.helper.RecordContextHolder;
 import site.yan.core.utils.IdGeneratorHelper;
 import site.yan.core.utils.TimeStamp;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Record {
@@ -35,13 +34,6 @@ public class Record {
 
     private Map<String, String> additionalPair;
 
-    private void init() {
-        this.startTimeStamp= TimeStamp.stamp();
-        this.id= IdGeneratorHelper.idLen32Generat();
-        this.notePair = new ArrayList(2);
-        this.additionalPair = new HashMap(16);
-    }
-
     public Record() {
         init();
     }
@@ -62,6 +54,24 @@ public class Record {
         this.stage = record.stage;
         this.notePair = new ArrayList(record.notePair);
         this.additionalPair = new HashMap(record.additionalPair);
+    }
+
+    public static Record createClientRecord() {
+        Record record = new Record();
+        record.setTraceId(RecordContextHolder.getTraceId())
+                .setServerName(RecordContextHolder.getServerName())
+                .setStage(RecordContextHolder.getStage());
+        return record;
+    }
+
+    /**
+     * 初始化 开始时间，id
+     */
+    private void init() {
+        this.startTimeStamp = TimeStamp.stamp();
+        this.id = IdGeneratorHelper.idLen32Generat();
+        this.notePair = new ArrayList(2);
+        this.additionalPair = new HashMap(16);
     }
 
     public String getTraceId() {
@@ -87,7 +97,9 @@ public class Record {
     }
 
     public Record setParentId(String parentId) {
-        this.parentId = parentId;
+        if (Strings.isNotBlank(parentId)) {
+            this.parentId = parentId;
+        }
         return this;
     }
 
@@ -151,6 +163,16 @@ public class Record {
 
     public Record setAdditionalPair(Map<String, String> additionalPair) {
         this.additionalPair = additionalPair;
+        return this;
+    }
+
+    public Record putAdditionalPair(String k, String v) {
+        this.additionalPair.put(k, v);
+        return this;
+    }
+
+    public Record addNotePair(Note... v) {
+        this.notePair.addAll(Arrays.asList(v));
         return this;
     }
 }

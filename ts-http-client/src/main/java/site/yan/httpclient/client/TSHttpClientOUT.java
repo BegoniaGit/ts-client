@@ -5,19 +5,19 @@ import site.yan.core.cache.TraceCache;
 import site.yan.core.data.Host;
 import site.yan.core.data.Note;
 import site.yan.core.data.Record;
+import site.yan.core.enumeration.HttpMethodType;
 import site.yan.core.enumeration.NoteType;
 import site.yan.core.helper.RecordContextHolder;
-import site.yan.core.utils.IdGeneratorHelper;
 import site.yan.core.utils.TimeStamp;
-import site.yan.httpclient.HttpClientCore;
-import site.yan.httpclient.adapter.ClientResp;
+import site.yan.httpclient.constant.HttpClientPairType;
+import site.yan.httpclient.model.ClientResp;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-public class TSHttpClientOUT extends HttpClientCore {
+public class TSHttpClientOUT extends AbstractHttpClient {
 
     private URL remoteUrl;
 
@@ -26,41 +26,43 @@ public class TSHttpClientOUT extends HttpClientCore {
         return null;
     }
 
+    @Override
     public String doGet(String httpUrl) {
-        Record record = before(httpUrl);
+        Record record = before(httpUrl, HttpMethodType.GET);
         ClientResp resp = sendHttpGet(httpUrl);
         after(resp, record);
         return resp.getRespStr();
     }
 
+    @Override
     public String doPost(String httpUrl) {
-        Record record = before(httpUrl);
+        Record record = before(httpUrl, HttpMethodType.POST);
         ClientResp resp = sendHttpPost(httpUrl);
         after(resp, record);
         return resp.getRespStr();
     }
 
+    @Override
     public String doPost(String httpUrl, String params) {
-        Record record = before(httpUrl);
+        Record record = before(httpUrl, HttpMethodType.POST);
         ClientResp resp = sendHttpPost(httpUrl, params);
         after(resp, record);
         return resp.getRespStr();
     }
 
+    @Override
     public String doPost(String httpUrl, Map<String, String> maps) {
-        Record record = before(httpUrl);
+        Record record = before(httpUrl, HttpMethodType.POST);
         ClientResp resp = sendHttpPost(httpUrl, maps);
         after(resp, record);
         return resp.getRespStr();
     }
 
-    private Record before(String httpUrl) {
+    private Record before(String httpUrl, HttpMethodType type) {
         parasUrl(httpUrl);
-        Record record = new Record();
-        record.setTraceId(RecordContextHolder.getTraceId())
-                .setParentId(RecordContextHolder.getServiceId())
-                .setId(IdGeneratorHelper.idLen32Generat());
-
+        Record record = Record.createClientRecord();
+        record.setParentId(RecordContextHolder.getServiceId())
+                .setName("client." + type.text());
         return record;
     }
 
@@ -74,30 +76,18 @@ public class TSHttpClientOUT extends HttpClientCore {
     }
 
     private void after(ClientResp clientResp, Record record) {
-        record.setDurationTime(TimeStamp.stamp() - record.getStartTimeStamp());
-        NotePairGen(record);
-        additionalPairGen(clientResp, record);
-        TraceCache.put(record);
-    }
+        long currentStamp = TimeStamp.stamp();
+        record.setDurationTime(currentStamp - record.getStartTimeStamp());
 
-    private void NotePairGen(Record record) {
-
-        Note note = new Note();
-        note.setNoteName(NoteType.CLIENT_SEND.text());
-        note.setHost(RecordContextHolder.getHost());
-        record.getNotePair().add(note);
-
+        Note startNote = new Note(NoteType.CLIENT_SEND.text(), record.getStartTimeStamp(), RecordContextHolder.getHost());
         Host remoteHost = new Host(remoteUrl.getHost(), remoteUrl.getHost(), remoteUrl.getDefaultPort());
-        Note note2 = new Note();
-        note2.setNoteName(NoteType.CLIENT_RECEIVE.text());
-        note2.setHost(remoteHost);
-        record.getNotePair().add(note2);
-    }
+        Note endNote = new Note(NoteType.CLIENT_RECEIVE.text(), currentStamp, remoteHost);
+        record.addNotePair(startNote, endNote);
 
-    private void additionalPairGen(ClientResp clientResp, Record record) {
-        Map<String, String> additonalPair = record.getAdditionalPair();
-        additonalPair.put("path", remoteUrl.getPath());
-        additonalPair.put("code", String.valueOf(clientResp.getCode()));
-        additonalPair.put("content size", String.valueOf(clientResp.getContentSize()));
+        record.putAdditionalPair(HttpClientPairType.PATH.text(), remoteUrl.getPath());
+        record.putAdditionalPair(HttpClientPairType.STATUS_CODE.text(), String.valueOf(clientResp.getCode()));
+        record.putAdditionalPair(HttpClientPairType.CONTENT_SIZE.text(), String.valueOf(clientResp.getContentSize()));
+
+        TraceCache.put(record);
     }
 }

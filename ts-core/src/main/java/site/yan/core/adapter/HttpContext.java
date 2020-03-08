@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class HttpContext implements Holder{
+public class HttpContext implements Holder {
 
     private HttpServletRequest httpServletRequest;
     private HttpServletResponse httpServletResponse;
@@ -33,6 +33,15 @@ public class HttpContext implements Holder{
 
     public String getTraceId() {
         return this.httpServletRequest.getHeader(HeaderType.TS_TRACE_ID.text());
+    }
+
+    public String getId() {
+        return this.httpServletRequest.getHeader(HeaderType.TS_ID.text());
+    }
+
+    public String getLastServerName() {
+        String lastServerName = this.httpServletRequest.getHeader(HeaderType.TS_SERVER_NAME.text());
+        return Strings.isBlank(lastServerName) ? "front end user" : lastServerName;
     }
 
     public boolean isNewTrace() {

@@ -3,6 +3,8 @@ package site.yan.core.helper;
 import site.yan.core.data.Host;
 import site.yan.core.data.Record;
 
+import java.util.Objects;
+
 public class RecordContextHolder {
 
     private static final ThreadLocal<Record> CURRENT_SERVER_RECORD = new ThreadLocal<Record>() {
@@ -11,37 +13,66 @@ public class RecordContextHolder {
         }
     };
 
-    private static final ThreadLocal<Host> CURRENT_SERVER_HOST = new ThreadLocal<Host>() {
-        protected Host initialValue() {
-            return new Host();
-        }
-    };
+    private static String parentId;
 
-    public static void setHost(Host host) {
-        Host host1 = CURRENT_SERVER_HOST.get();
-        host1.setServerName(host.getServerName());
-        host1.setAddress(host.getAddress());
-        host1.setPort(host.getPort());
+    private static Host host;
+
+    private static String stage;
+
+    public static String getParentId() {
+        return parentId;
+    }
+
+    public static void setParentId(String parentId) {
+        RecordContextHolder.parentId = parentId;
+    }
+
+    public static String getStage() {
+        return stage;
+    }
+
+    public static void setStage(String stage) {
+        RecordContextHolder.stage = stage;
+    }
+
+    public static String getServerName() {
+        return host.getServerName();
+    }
+
+    public static String getServerAddress() {
+        return host.getAddress();
+    }
+
+    public static int getServerPort() {
+        return host.getPort();
     }
 
     public static Host getHost() {
-        return CURRENT_SERVER_HOST.get();
+        if (Objects.isNull(host)) {
+            return null;
+        } else {
+            return host;
+        }
+    }
+
+    public static void setHost(Host host) {
+        RecordContextHolder.host = host;
     }
 
     public static String getTraceId() {
-        return ((Record) CURRENT_SERVER_RECORD.get()).getTraceId();
+        return CURRENT_SERVER_RECORD.get().getTraceId();
     }
 
     public static String getServiceId() {
-        return ((Record) CURRENT_SERVER_RECORD.get()).getId();
-    }
-
-    public String getServerRecordId() {
         return CURRENT_SERVER_RECORD.get().getId();
     }
 
     public static Record getCurrentServerRecord() {
         return CURRENT_SERVER_RECORD.get();
+    }
+
+    public String getServerRecordId() {
+        return CURRENT_SERVER_RECORD.get().getId();
     }
 
     public void clear() {

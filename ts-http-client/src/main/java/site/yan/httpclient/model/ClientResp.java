@@ -1,4 +1,4 @@
-package site.yan.httpclient.adapter;
+package site.yan.httpclient.model;
 
 public class ClientResp {
     private String respStr;

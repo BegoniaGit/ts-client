@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import site.yan.app.Repository.UserDao;
 import site.yan.app.model.Apple;
 import site.yan.app.model.UserDO;
-import site.yan.httpclient.client.TSHttpClientIN;
-import site.yan.httpclient.client.TSHttpClientOUT;
-import site.yan.httpclient.trace.TSHttpClient;
+import site.yan.app.service.Myservice;
+import site.yan.httpclient.builder.HttpClientBuilder;
+import site.yan.httpclient.builder.TargetLocationType;
 
 @RestController
 @RequestMapping("/")
@@ -15,6 +15,9 @@ public class AppleAPI {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    Myservice myservice;
 
     @PostMapping("/add")
     public Apple addApple(@RequestBody Apple apple) {
@@ -44,17 +47,20 @@ public class AppleAPI {
 
     @PutMapping("/tri")
     public void taskTrigger() throws Exception {
-        String resp = new TSHttpClientIN().doGet("http://127.0.0.1:90/inner/server");
-        String resp2 = new TSHttpClientOUT().doGet("http://www.baidu.com");
+        String resp = HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
+                .build().doGet("http://127.0.0.1:90/inner/server");
+        String resp2 = HttpClientBuilder.builder().targetLocation(TargetLocationType.EXTERNAL)
+                .build().doGet("http://www.baidu.com");
         System.out.println(resp);
 
         UserDO userDO = new UserDO();
         userDO.setId(1L);
-        userDO.setName("哈哈");
+        userDO.setName(myservice.getName("me", 2));
         userDO.setAccount("fengqy");
         userDO.setPwd("123456");
         userDao.save(userDO);
 
         userDao.findAll();
     }
+
 }
