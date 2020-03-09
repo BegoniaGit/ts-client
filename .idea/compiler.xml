@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="ts-web-filter" />
+        <module name="ts-client" />
+        <module name="ts-mysql" />
+        <module name="ts-core" />
+        <module name="ts-http-client" />
+        <module name="app" />
+        <module name="ts-local" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="app-test" target="1.8" />
+      <module name="ts-client" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="app" options="-parameters" />
+      <module name="app-test" options="-parameters" />
+      <module name="ts-client" options="-parameters" />
+      <module name="ts-core" options="-parameters" />
+      <module name="ts-http-client" options="-parameters" />
+      <module name="ts-local" options="-parameters" />
+      <module name="ts-mysql" options="-parameters" />
+      <module name="ts-web-filter" options="-parameters" />
+    </option>
+  </component>
+</project>

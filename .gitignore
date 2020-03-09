@@ -1,0 +1,11 @@
+
+src/main/resources/static/
+src/main/resources/templates/
+
+*.iml
+/ts-web-filter/target/
+/out/
+/log/
+/out/
+/ts-core/target/
+/out/

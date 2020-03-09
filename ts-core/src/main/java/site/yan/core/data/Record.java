@@ -64,6 +64,19 @@ public class Record {
         return record;
     }
 
+    public void clear() {
+        this.traceId = null;
+        this.parentId = null;
+        this.startTimeStamp = null;
+        this.durationTime = null;
+        this.name = null;
+        this.serverName = null;
+        this.stage = null;
+        this.id = IdGeneratorHelper.idLen32Generat();
+        this.notePair = new ArrayList(2);
+        this.additionalPair = new HashMap(16);
+    }
+
     /**
      * 初始化 开始时间，id
      */
