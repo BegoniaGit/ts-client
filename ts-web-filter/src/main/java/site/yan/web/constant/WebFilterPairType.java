@@ -3,7 +3,8 @@ package site.yan.web.constant;
 public enum WebFilterPairType {
     PATH("path"),
     STATUS_CODE("status code"),
-    CONTENT_SIZE("content size");
+    CONTENT_SIZE("content size"),
+    EXCEPTION("exception");
 
     private final String value;
 

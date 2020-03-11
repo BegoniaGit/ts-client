@@ -32,15 +32,17 @@ public class Boot {
 
     @Bean
     public RecordContextHolder recordContextHolder() {
+        TSProperties.setValues(properties.isEnable(), properties.getServerName(), properties.getStage());
         InetAddress address = null;
         try {
             address = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        Host serverHost = new Host(properties.getServerName(), address.getHostAddress(), serverPort);
+        // config the server information
+        Host serverHost = new Host(TSProperties.getServerName(), address.getHostAddress(), serverPort);
         RecordContextHolder.setHost(serverHost);
-        RecordContextHolder.setStage(properties.getStage());
+        RecordContextHolder.setStage(TSProperties.getStage());
         return new RecordContextHolder();
     }
 }

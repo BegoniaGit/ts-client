@@ -13,6 +13,8 @@ import java.net.URL;
 
 public class HttpContext implements Holder {
 
+    private boolean hasException;
+    private Exception exception;
     private HttpServletRequest httpServletRequest;
     private HttpServletResponse httpServletResponse;
     private ServletRequest servletRequest;
@@ -25,6 +27,23 @@ public class HttpContext implements Holder {
         this.servletRequest = servletRequest;
         this.servletResponse = servletResponse;
         this.filterChain = filterChain;
+        this.hasException=false;
+    }
+
+    public boolean isHasException() {
+        return hasException;
+    }
+
+    public void setHasException(boolean hasException) {
+        this.hasException = hasException;
+    }
+
+    public Exception getException() {
+        return exception;
+    }
+
+    public void setException(Exception exception) {
+        this.exception = exception;
     }
 
     public String getName() {

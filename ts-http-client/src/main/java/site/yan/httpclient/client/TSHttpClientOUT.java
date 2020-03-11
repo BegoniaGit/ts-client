@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class TSHttpClientOUT extends AbstractHttpClient {
 
@@ -76,6 +77,11 @@ public class TSHttpClientOUT extends AbstractHttpClient {
     }
 
     private void after(ClientResp clientResp, Record record) {
+        if (Objects.nonNull(clientResp.getException())) {
+            record.setError(true);
+            record.putAdditionalPair(HttpClientPairType.EXCEPTION.text(), clientResp.getException().getMessage());
+        }
+
         long currentStamp = TimeStamp.stamp();
         record.setDurationTime(currentStamp - record.getStartTimeStamp());
 
@@ -84,7 +90,7 @@ public class TSHttpClientOUT extends AbstractHttpClient {
         Note endNote = new Note(NoteType.CLIENT_RECEIVE.text(), currentStamp, remoteHost);
         record.addNotePair(startNote, endNote);
 
-        record.putAdditionalPair(HttpClientPairType.PATH.text(), remoteUrl.getPath());
+        record.putAdditionalPair(HttpClientPairType.PATH.text(), "".equals(remoteUrl.getPath()) ? "/" : remoteUrl.getPath());
         record.putAdditionalPair(HttpClientPairType.STATUS_CODE.text(), String.valueOf(clientResp.getCode()));
         record.putAdditionalPair(HttpClientPairType.CONTENT_SIZE.text(), String.valueOf(clientResp.getContentSize()));
 

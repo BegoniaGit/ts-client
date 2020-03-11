@@ -60,8 +60,9 @@ public abstract class AbstractHttpClient {
             StringEntity stringEntity = new StringEntity(params, "UTF-8");
             stringEntity.setContentType("application/x-www-form-urlencoded");
             httpPost.setEntity(stringEntity);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            throw exc;
         }
         return sendHttpPost(httpPost);
     }
@@ -92,7 +93,7 @@ public abstract class AbstractHttpClient {
      *
      * @param httpUrl
      */
-    protected ClientResp sendHttpGet(String httpUrl) {
+    protected ClientResp sendHttpGet(String httpUrl)  {
         HttpGet httpGet = new HttpGet(httpUrl);// 创建get请求
         return sendHttpGet(httpGet);
     }
@@ -146,8 +147,9 @@ public abstract class AbstractHttpClient {
             HttpEntity entity = response.getEntity();
             String responseContent = EntityUtils.toString(entity, "UTF-8");
             clientResp = new ClientResp(responseContent, response.getStatusLine().getStatusCode(), entity.getContentLength());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exc) {
+            clientResp = ClientResp.BuildException(exc);
+            exc.printStackTrace();
         } finally {
             try {
                 // 关闭连接,释放资源
@@ -186,8 +188,9 @@ public abstract class AbstractHttpClient {
             entity = response.getEntity();
             responseContent = EntityUtils.toString(entity, "UTF-8");
             clientResp = new ClientResp(responseContent, response.getStatusLine().getStatusCode(), responseContent.length());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exc) {
+            clientResp = ClientResp.BuildException(exc);
+            exc.printStackTrace();
         } finally {
             try {
                 // 关闭连接,释放资源

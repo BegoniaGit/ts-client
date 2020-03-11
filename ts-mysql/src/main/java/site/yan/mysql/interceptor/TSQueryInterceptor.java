@@ -4,6 +4,7 @@ package site.yan.mysql.interceptor;
 import com.mysql.cj.MysqlConnection;
 import com.mysql.cj.Query;
 import com.mysql.cj.conf.HostInfo;
+import com.mysql.cj.exceptions.ExceptionInterceptor;
 import com.mysql.cj.interceptors.QueryInterceptor;
 import com.mysql.cj.log.Log;
 import com.mysql.cj.protocol.Resultset;

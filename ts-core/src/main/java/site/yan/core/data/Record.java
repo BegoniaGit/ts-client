@@ -21,6 +21,8 @@ public class Record {
 
     private Long durationTime;
 
+    private boolean error;
+
     // such as: http.get
     private String name;
 
@@ -49,6 +51,7 @@ public class Record {
         this.parentId = record.parentId;
         this.startTimeStamp = record.startTimeStamp;
         this.durationTime = record.durationTime;
+        this.error = record.error;
         this.name = record.name;
         this.serverName = record.serverName;
         this.stage = record.stage;
@@ -70,6 +73,7 @@ public class Record {
         this.startTimeStamp = null;
         this.durationTime = null;
         this.name = null;
+        this.error = false;
         this.serverName = null;
         this.stage = null;
         this.id = IdGeneratorHelper.idLen32Generat();
@@ -85,6 +89,14 @@ public class Record {
         this.id = IdGeneratorHelper.idLen32Generat();
         this.notePair = new ArrayList(2);
         this.additionalPair = new HashMap(16);
+    }
+
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
     }
 
     public String getTraceId() {

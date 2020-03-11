@@ -66,13 +66,14 @@ public abstract class AbstractMethodTracedAdvice {
             Object result = null;
             try {
                 result = pjp.proceed();
-            } catch (Exception var17) {
-                record.putAdditionalPair(LocalPairType.EXCEPTION.text(), ExceptionUtil.generateServletExceptionValue(var17));
-                throw var17;
+            } catch (Exception exc) {
+                record.setError(true);
+                record.putAdditionalPair(LocalPairType.EXCEPTION.text(), exc.getMessage());
+                throw exc;
             } finally {
                 long currentTime = TimeStamp.stamp();
                 record.setDurationTime(currentTime - record.getStartTimeStamp());
-                record.putAdditionalPair(LocalPairType.RETURN_VALUE.text(), result.toString());
+                record.putAdditionalPair(LocalPairType.RETURN_VALUE.text(), Objects.isNull(result) ? null : result.toString());
                 record.addNotePair(new Note(NoteType.LOCAL_END.text(), currentTime, RecordContextHolder.getHost()));
                 TraceCache.put(record);
             }

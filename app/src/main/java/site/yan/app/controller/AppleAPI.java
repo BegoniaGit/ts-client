@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import site.yan.app.Repository.UserDao;
 import site.yan.app.model.Apple;
+import site.yan.app.model.UserDO;
 import site.yan.app.service.Myservice;
+import site.yan.httpclient.builder.HttpClientBuilder;
+import site.yan.httpclient.builder.TargetLocationType;
 
 @RestController
 @RequestMapping("/")
@@ -44,21 +47,29 @@ public class AppleAPI {
 
     @PutMapping("/tri")
     public void taskTrigger() throws Exception {
-//        String resp = HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
+//        if(true)throw new Exception("I am a exception");
+
+//        myservice.getName("d",3);
+//        HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
 //                .build().doGet("http://127.0.0.1:90/inner/server");
-//        String resp2 = HttpClientBuilder.builder().targetLocation(TargetLocationType.EXTERNAL)
-//                .build().doGet("http://www.baidu.com");
-//        System.out.println(resp);
 //
-//        userDao.deleteAll();
+//        HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
+//                .build().doGet("http://127.0.0.1:90/inner/server");
 //
-//
-//        UserDO userDO = new UserDO();
-//        userDO.setId(1L);
-//        userDO.setName(myservice.getName("me", 2));
-//        userDO.setAccount("fengqy");
-//        userDO.setPwd("123456");
-//        userDao.save(userDO);
+//        HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
+//                .build().doGet("http://127.0.0.1:90/inner/server");
+
+
+        HttpClientBuilder.builder().targetLocation(TargetLocationType.EXTERNAL)
+                .build().doGet("http://yanyan.site");
+
+
+        UserDO userDO = new UserDO();
+        userDO.setId(1L);
+        userDO.setName(myservice.getName("me", 2));
+        userDO.setAccount("fengqy");
+        userDO.setPwd("123456");
+        userDao.save(userDO);
         userDao.findById(1L);
     }
 
