@@ -5,7 +5,7 @@ public class RecordBuilder {
     private Record record;
 
     public RecordBuilder() {
-        this.record = new Record();
+        this.record = new Record(true);
     }
 
     public RecordBuilder setTraceId(String traceId) {

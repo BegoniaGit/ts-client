@@ -7,7 +7,7 @@ import site.yan.httpclient.client.TSHttpClientOUT;
 
 public class HttpClientBuilder {
 
-    private AbstractHttpClient httpClient;
+    private TSHttpClientOUT httpClient;
 
     private HttpClientBuilder() {
         // Nothing to do.
@@ -18,7 +18,9 @@ public class HttpClientBuilder {
     }
 
     public HttpClientBuilder targetLocation(TargetLocationType type) {
-        this.httpClient = type.equals(TargetLocationType.INTERNAL) ? new TSHttpClientIN() : new TSHttpClientOUT();
+
+        this.httpClient =  new TSHttpClientOUT();
+        this.httpClient.setTargetLocationType(type);
         return this;
     }
 

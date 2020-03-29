@@ -4,6 +4,7 @@ public enum MysqlPairType {
     SQL("sql"),
     RESULT_TYPE("result type"),
     RESULT_SIZE("result size"),
+    EXCEPTION("exception"),
     MYSQL_SERVER_NAME("mysql name");
 
     private final String value;

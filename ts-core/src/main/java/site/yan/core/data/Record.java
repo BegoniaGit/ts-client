@@ -15,6 +15,8 @@ public class Record {
 
     private String id;
 
+    private String lastId;
+
     private String parentId;
 
     private Long startTimeStamp;
@@ -36,7 +38,10 @@ public class Record {
 
     private Map<String, String> additionalPair;
 
-    public Record() {
+    public Record(boolean initId) {
+        if (initId) {
+            this.setId(IdGeneratorHelper.idLen32Generat());
+        }
         init();
     }
 
@@ -49,18 +54,22 @@ public class Record {
         this.traceId = record.traceId;
         this.id = record.id;
         this.parentId = record.parentId;
+        this.lastId = record.lastId;
         this.startTimeStamp = record.startTimeStamp;
         this.durationTime = record.durationTime;
         this.error = record.error;
         this.name = record.name;
         this.serverName = record.serverName;
         this.stage = record.stage;
-        this.notePair = new ArrayList(record.notePair);
+        this.notePair = new ArrayList(16);
         this.additionalPair = new HashMap(record.additionalPair);
+        record.notePair.stream().forEach(item -> {
+            this.notePair.add(new Note(item));
+        });
     }
 
     public static Record createClientRecord() {
-        Record record = new Record();
+        Record record = new Record(true);
         record.setTraceId(RecordContextHolder.getTraceId())
                 .setServerName(RecordContextHolder.getServerName())
                 .setStage(RecordContextHolder.getStage());
@@ -70,13 +79,13 @@ public class Record {
     public void clear() {
         this.traceId = null;
         this.parentId = null;
+        this.lastId = null;
         this.startTimeStamp = null;
         this.durationTime = null;
         this.name = null;
         this.error = false;
         this.serverName = null;
         this.stage = null;
-        this.id = IdGeneratorHelper.idLen32Generat();
         this.notePair = new ArrayList(2);
         this.additionalPair = new HashMap(16);
     }
@@ -85,10 +94,9 @@ public class Record {
      * 初始化 开始时间，id
      */
     private void init() {
-        this.startTimeStamp = TimeStamp.stamp();
-        this.id = IdGeneratorHelper.idLen32Generat();
-        this.notePair = new ArrayList(2);
-        this.additionalPair = new HashMap(16);
+        this.setStartTimeStamp(TimeStamp.stamp());
+        this.setNotePair(new ArrayList(2));
+        this.setAdditionalPair(new HashMap(16));
     }
 
     public boolean isError() {
@@ -114,7 +122,21 @@ public class Record {
 
     public Record setId(String id) {
         this.id = id;
+        this.lastId = RecordContextHolder.lastIdGetAndSet(id);
         return this;
+    }
+
+    public Record setIdNotLastId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getLastId() {
+        return lastId;
+    }
+
+    public void setLastId(String lastId) {
+        this.lastId = lastId;
     }
 
     public String getParentId() {

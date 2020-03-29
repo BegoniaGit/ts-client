@@ -9,6 +9,12 @@ public class Note {
     public Note() {
     }
 
+    public Note(Note noteCopy) {
+        this.noteName = noteCopy.getNoteName();
+        this.timeStamp = noteCopy.getTimeStamp();
+        this.host = new Host(noteCopy.getHost());
+    }
+
     public Note(String noteName, Long timeStamp, Host host) {
         this.noteName = noteName;
         this.timeStamp = timeStamp;
@@ -38,4 +44,5 @@ public class Note {
     public void setHost(Host host) {
         this.host = host;
     }
+
 }

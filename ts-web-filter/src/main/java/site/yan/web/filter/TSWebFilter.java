@@ -39,7 +39,10 @@ public class TSWebFilter implements Filter {
     }
 
     private void doTsFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        Record record = RecordContextHolder.getCurrentServerRecord();
         HttpContext context = before(servletRequest, servletResponse, filterChain);
+        context.getHttpServletResponse().addHeader(HeaderType.TS_ID.text(), record.getId());
+        context.getHttpServletResponse().addHeader(HeaderType.TS_TRACE_ID.text(), record.getTraceId());
         try {
             filterChain.doFilter(servletRequest, servletResponse);
             context.setHasException(false);
@@ -63,7 +66,7 @@ public class TSWebFilter implements Filter {
 
         record.setTraceId(traceId)
                 .setParentId(parentId)
-                .setId(IdGeneratorHelper.idLen32Generat())
+                .setIdNotLastId(IdGeneratorHelper.idLen32Generat())
                 .setName(httpContext.getName())
                 .setStartTimeStamp(TimeStamp.stamp())
                 .setServerName(TSProperties.getServerName())
@@ -92,9 +95,7 @@ public class TSWebFilter implements Filter {
         }
         TraceCache.put(new Record(record));
         record.clear();
-
-        httpContext.getHttpServletResponse().addHeader(HeaderType.TS_ID.text(), record.getId());
-        httpContext.getHttpServletResponse().addHeader(HeaderType.TS_TRACE_ID.text(), record.getTraceId());
+        RecordContextHolder.lastIdGetAndSet(null);
     }
 
     private boolean traceIgnore(ServletRequest request) {
@@ -106,7 +107,7 @@ public class TSWebFilter implements Filter {
             path = "";
         }
         for (String item : TraceIgnoreType.ignoreUrl) {
-            if (item.equals(path)) {
+            if (path.startsWith(item) || path.endsWith(item)) {
                 return false;
             }
         }

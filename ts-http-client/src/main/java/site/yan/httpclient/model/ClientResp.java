@@ -5,16 +5,18 @@ public class ClientResp {
 
     private int code;
     private long contentSize;
+    private String id;
     private Exception exception;
 
     public ClientResp() {
         // Nothing to do
     }
 
-    public ClientResp(String respStr, int code, long contentSize) {
+    public ClientResp(String respStr, int code, long contentSize,String id) {
         this.respStr = respStr;
         this.code = code;
         this.contentSize = contentSize;
+        this.id=id;
     }
 
     public static ClientResp BuildException(Exception exception) {
@@ -54,5 +56,13 @@ public class ClientResp {
 
     public void setContentSize(long contentSize) {
         this.contentSize = contentSize;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

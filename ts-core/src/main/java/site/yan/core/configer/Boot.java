@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import site.yan.core.api.ExportAPI;
 import site.yan.core.data.Host;
+import site.yan.core.delayed.RecordStash;
 import site.yan.core.helper.RecordContextHolder;
 
 import java.net.InetAddress;
@@ -43,6 +44,10 @@ public class Boot {
         Host serverHost = new Host(TSProperties.getServerName(), address.getHostAddress(), serverPort);
         RecordContextHolder.setHost(serverHost);
         RecordContextHolder.setStage(TSProperties.getStage());
+
+        // start record stash
+        RecordStash.receive();
+        RecordStash.send();
         return new RecordContextHolder();
     }
 }

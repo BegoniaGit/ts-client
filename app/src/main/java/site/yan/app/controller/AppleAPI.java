@@ -42,35 +42,49 @@ public class AppleAPI {
 
     @GetMapping("/inner/server")
     public String innerServer() {
+
+        try{
+            HttpClientBuilder.builder().targetLocation(TargetLocationType.EXTERNAL)
+                    .build().doGet("http://baidu.com");
+        } catch (Exception e) {
+        }
+
+        myservice.getName("2", 2);
+
+        UserDO userDO = new UserDO();
+        userDO.setName("ii");
+        userDO.setAccount("fengqy");
+        userDO.setPwd("123456");
+        userDao.save(userDO);
+        userDao.findAll();
         return "hello,succeed";
     }
 
     @PutMapping("/tri")
     public void taskTrigger() throws Exception {
-//        if(true)throw new Exception("I am a exception");
 
-//        myservice.getName("d",3);
-//        HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
-//                .build().doGet("http://127.0.0.1:90/inner/server");
-//
-//        HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
-//                .build().doGet("http://127.0.0.1:90/inner/server");
-//
-//        HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
-//                .build().doGet("http://127.0.0.1:90/inner/server");
+        new Thread(()->{
+            HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
+                    .build().doGet("http://127.0.0.1:8080/inner/server");
+        }).start();
 
+        HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
+                .build().doGet("http://127.0.0.1:8080/inner/server");
 
-        HttpClientBuilder.builder().targetLocation(TargetLocationType.EXTERNAL)
-                .build().doGet("http://yanyan.site");
+        try {
+            HttpClientBuilder.builder().targetLocation(TargetLocationType.EXTERNAL)
+                    .build().doGet("http://baidu.com");
+        } catch (Exception e) {
+        }
 
+        myservice.getName("2", 2);
 
         UserDO userDO = new UserDO();
-        userDO.setId(1L);
-        userDO.setName(myservice.getName("me", 2));
+        userDO.setName("ii");
         userDO.setAccount("fengqy");
         userDO.setPwd("123456");
         userDao.save(userDO);
-        userDao.findById(1L);
+        userDao.findAll();
     }
 
 }

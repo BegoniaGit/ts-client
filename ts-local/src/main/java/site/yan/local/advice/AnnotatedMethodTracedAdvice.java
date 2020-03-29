@@ -9,6 +9,7 @@ public class AnnotatedMethodTracedAdvice extends AbstractMethodTracedAdvice {
         super();
     }
 
+    @Override
     @Pointcut("@annotation(site.yan.local.annotation.Traced)")
     public void pointcut() {
     }

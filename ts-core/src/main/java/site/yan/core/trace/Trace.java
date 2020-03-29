@@ -8,7 +8,7 @@ public class Trace {
 
 
     public Trace() {
-        this.record = new Record();
+        this.record = new Record(true);
     }
 
     public static Trace getTrace() {

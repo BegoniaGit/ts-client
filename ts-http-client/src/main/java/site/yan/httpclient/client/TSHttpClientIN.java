@@ -2,8 +2,10 @@ package site.yan.httpclient.client;
 
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
+import site.yan.core.data.Record;
 import site.yan.core.enumeration.HeaderType;
 import site.yan.core.helper.RecordContextHolder;
+import site.yan.core.utils.TimeStamp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ public class TSHttpClientIN extends AbstractHttpClient {
     private String traceId;
     private String parentId;
     private String serverName;
+    private long startTimeStamp;
 
     @Override
     protected List<Header> headerConfig() {
@@ -61,6 +64,13 @@ public class TSHttpClientIN extends AbstractHttpClient {
         this.traceId = RecordContextHolder.getTraceId();
         this.parentId = RecordContextHolder.getServiceId();
         this.serverName = RecordContextHolder.getServerName();
+        this.startTimeStamp= TimeStamp.stamp();
         return this.traceId;
+    }
+
+    private void after(){
+        Record record=Record.createClientRecord();
+        record.setStartTimeStamp(this.startTimeStamp);
+
     }
 }

@@ -1,6 +1,8 @@
 package site.yan.core.helper;
 
+import org.apache.logging.log4j.util.Strings;
 import site.yan.core.data.Host;
+import site.yan.core.data.LastId;
 import site.yan.core.data.Record;
 
 import java.util.Objects;
@@ -8,8 +10,15 @@ import java.util.Objects;
 public class RecordContextHolder {
 
     private static final ThreadLocal<Record> CURRENT_SERVER_RECORD = new ThreadLocal<Record>() {
+        @Override
         protected Record initialValue() {
-            return new Record();
+            return new Record(true);
+        }
+    };
+    private static final ThreadLocal<LastId> LAST_ID = new ThreadLocal<LastId>() {
+        @Override
+        protected LastId initialValue() {
+            return new LastId(null);
         }
     };
 
@@ -74,6 +83,22 @@ public class RecordContextHolder {
     public String getServerRecordId() {
         return CURRENT_SERVER_RECORD.get().getId();
     }
+
+    public static boolean hasLastId() {
+        return Strings.isNotBlank(RecordContextHolder.LAST_ID.get().getLastId());
+    }
+
+    public static String lastIdGetAndSet(String id) {
+
+        String lastId = RecordContextHolder.LAST_ID.get().getLastId();
+        RecordContextHolder.LAST_ID.get().setLastId(id);
+
+        System.out.println("lastId: " + lastId);
+        System.out.println("id:     " + id);
+        System.out.println();
+        return lastId;
+    }
+
 
     public void clear() {
         CURRENT_SERVER_RECORD.remove();

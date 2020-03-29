@@ -1,4 +1,4 @@
-POST 127.0.0.1:90/add
+PUT hw.yanyan.site:8080/app/tri
 Content-Type: application/json
 
 {
@@ -18,6 +18,9 @@ PUT 127.0.0.1:90/put?color=green
 DELETE 127.0.0.1:90/delete?color=blue
 
 ###
-PUT 127.0.0.1:90/tri
+PUT 127.0.0.1:8080/tri
+
+###
+GET http://hw.yanyan.site:56/?traceId=41d82a010e0543daa3bc5c93982441dd
 
 ###

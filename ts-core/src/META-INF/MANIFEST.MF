@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Main-Class: site.yan.app.AppApplication
+Class-Path: jackson-core-2.10.2.jar spring-boot-starter-jdbc-2.2.5.RELEA
+ SE.jar jackson-datatype-jsr310-2.10.2.jar spring-boot-starter-validatio
+ n-2.2.5.RELEASE.jar jakarta.validation-api-2.0.2.jar slf4j-api-1.7.30.j
+ ar spring-core-5.2.4.RELEASE.jar spring-jcl-5.2.4.RELEASE.jar log4j-to-
+ slf4j-2.12.1.jar spring-boot-autoconfigure-2.2.5.RELEASE.jar hibernate-
+ commons-annotations-5.1.0.Final.jar spring-data-jpa-2.2.5.RELEASE.jar s
+ pring-boot-starter-aop-2.2.5.RELEASE.jar spring-aspects-5.2.4.RELEASE.j
+ ar stax-ex-1.8.1.jar istack-commons-runtime-3.0.8.jar jackson-databind-
+ 2.10.2.jar spring-data-commons-2.2.5.RELEASE.jar byte-buddy-1.10.8.jar 
+ jakarta.annotation-api-1.3.5.jar txw2-2.3.2.jar httpclient-4.5.11.jar s
+ pring-context-5.2.4.RELEASE.jar logback-classic-1.2.3.jar spring-orm-5.
+ 2.4.RELEASE.jar spring-boot-starter-logging-2.2.5.RELEASE.jar jaxb-runt
+ ime-2.3.2.jar spring-expression-5.2.4.RELEASE.jar spring-webmvc-5.2.4.R
+ ELEASE.jar log4j-api-2.12.1.jar jackson-module-parameter-names-2.10.2.j
+ ar aspectjweaver-1.9.5.jar logback-core-1.2.3.jar jul-to-slf4j-1.7.30.j
+ ar spring-aop-5.2.4.RELEASE.jar httpclient-4.5.5.jar jakarta.persistenc
+ e-api-2.2.3.jar mysql-connector-java-8.0.19.jar spring-boot-starter-jso
+ n-2.2.5.RELEASE.jar spring-beans-5.2.4.RELEASE.jar antlr-2.7.7.jar dom4
+ j-2.1.1.jar spring-tx-5.2.4.RELEASE.jar jakarta.transaction-api-1.3.3.j
+ ar spring-jdbc-5.2.4.RELEASE.jar FastInfoset-1.2.16.jar spring-boot-sta
+ rter-2.2.5.RELEASE.jar jackson-annotations-2.10.2.jar hibernate-validat
+ or-6.0.18.Final.jar commons-codec-1.13.jar snakeyaml-1.25.jar jakarta.a
+ ctivation-api-1.2.2.jar javassist-3.24.0-GA.jar spring-boot-starter-dat
+ a-jpa-2.2.5.RELEASE.jar spring-boot-starter-web-2.2.5.RELEASE.jar Hikar
+ iCP-3.4.2.jar jackson-datatype-jdk8-2.10.2.jar spring-boot-2.2.5.RELEAS
+ E.jar jakarta.xml.bind-api-2.3.2.jar spring-web-5.2.4.RELEASE.jar jande
+ x-2.1.1.Final.jar hibernate-core-5.4.12.Final.jar httpcore-4.4.13.jar c
+ lassmate-1.5.1.jar jboss-logging-3.4.1.Final.jar
+

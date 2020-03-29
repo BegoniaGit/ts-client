@@ -8,7 +8,6 @@ import site.yan.core.data.Note;
 import site.yan.core.data.Record;
 import site.yan.core.enumeration.NoteType;
 import site.yan.core.helper.RecordContextHolder;
-import site.yan.core.utils.ExceptionUtil;
 import site.yan.core.utils.ReflectUtil;
 import site.yan.core.utils.TimeStamp;
 import site.yan.local.constant.LocalPairType;
@@ -36,7 +35,7 @@ public abstract class AbstractMethodTracedAdvice {
             Method method = signature.getMethod();
 
             String parentId = Objects.isNull(RecordContextHolder.getParentId()) ? RecordContextHolder.getServiceId() : RecordContextHolder.getParentId();
-            record.setName("method." + method.getName() + ":" + method.getDeclaringClass().getName())
+            record.setName("method." + method.getName())
                     .setParentId(parentId);
             record.putAdditionalPair(LocalPairType.METHOD_NAME.text(), method.getName());
             record.putAdditionalPair(LocalPairType.RETURN_TYPE.text(), method.getReturnType().getName());

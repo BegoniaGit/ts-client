@@ -7,13 +7,12 @@ public class Host {
     private int port;
 
     public Host() {
-
     }
 
-    public Host(Host host) {
-        this.serverName = host.serverName;
-        this.address = host.address;
-        this.port = host.port;
+    public Host(Host hostCopy) {
+        this.serverName = hostCopy.serverName;
+        this.address = hostCopy.address;
+        this.port = hostCopy.port;
     }
 
     public Host(String serverName, String address, int port) {
@@ -45,4 +44,5 @@ public class Host {
     public void setPort(int port) {
         this.port = port;
     }
+
 }

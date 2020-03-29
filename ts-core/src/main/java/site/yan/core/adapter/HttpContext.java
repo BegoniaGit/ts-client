@@ -47,7 +47,7 @@ public class HttpContext implements Holder {
     }
 
     public String getName() {
-        return "HTTP." + this.httpServletRequest.getMethod();
+        return "http." + this.httpServletRequest.getMethod().toLowerCase();
     }
 
     public String getTraceId() {

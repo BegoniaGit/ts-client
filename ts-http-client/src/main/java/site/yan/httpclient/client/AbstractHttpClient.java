@@ -114,7 +114,9 @@ public abstract class AbstractHttpClient {
 
     private void setGetHeader(HttpGet httpGet) {
         List<Header> headers = setHeadersAndGet();
-        if (Objects.isNull(headers)) return;
+        if (Objects.isNull(headers)) {
+            return;
+        }
         for (Header header : headers) {
             httpGet.setHeader(header);
         }
@@ -146,7 +148,9 @@ public abstract class AbstractHttpClient {
             response = httpClient.execute(httpPost);
             HttpEntity entity = response.getEntity();
             String responseContent = EntityUtils.toString(entity, "UTF-8");
-            clientResp = new ClientResp(responseContent, response.getStatusLine().getStatusCode(), entity.getContentLength());
+            Header tsIdHeader=response.getFirstHeader("ts-id");
+            String tsId=Objects.isNull(tsIdHeader)?null:tsIdHeader.getValue();
+            clientResp = new ClientResp(responseContent, response.getStatusLine().getStatusCode(), entity.getContentLength(),tsId);
         } catch (Exception exc) {
             clientResp = ClientResp.BuildException(exc);
             exc.printStackTrace();
@@ -187,7 +191,9 @@ public abstract class AbstractHttpClient {
             response = httpClient.execute(httpGet);
             entity = response.getEntity();
             responseContent = EntityUtils.toString(entity, "UTF-8");
-            clientResp = new ClientResp(responseContent, response.getStatusLine().getStatusCode(), responseContent.length());
+            Header tsIdHeader=response.getFirstHeader("ts-id");
+            String tsId=Objects.isNull(tsIdHeader)?null:tsIdHeader.getValue();
+            clientResp = new ClientResp(responseContent, response.getStatusLine().getStatusCode(), responseContent.length(),tsId);
         } catch (Exception exc) {
             clientResp = ClientResp.BuildException(exc);
             exc.printStackTrace();

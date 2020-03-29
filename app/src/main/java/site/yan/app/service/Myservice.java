@@ -9,8 +9,13 @@ import java.util.Random;
 public class Myservice {
 
     @Traced
-    public String getName(String s, int n) throws Exception{
-        if(true) throw new Exception("hhh");
+    public String getName(String s, int n) {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return s + "apple";
     }
 }
