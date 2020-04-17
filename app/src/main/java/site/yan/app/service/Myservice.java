@@ -1,6 +1,7 @@
 package site.yan.app.service;
 
 import org.springframework.stereotype.Service;
+import site.yan.local.advice.RowTrace;
 import site.yan.local.annotation.Traced;
 
 import java.util.Random;

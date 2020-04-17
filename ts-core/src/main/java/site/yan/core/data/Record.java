@@ -94,6 +94,7 @@ public class Record {
      * 初始化 开始时间，id
      */
     private void init() {
+        this.setError(false);
         this.setStartTimeStamp(TimeStamp.stamp());
         this.setNotePair(new ArrayList(2));
         this.setAdditionalPair(new HashMap(16));

@@ -1,4 +1,4 @@
-PUT hw.yanyan.site:8080/app/tri
+PUT localhost:8080/tri
 Content-Type: application/json
 
 {

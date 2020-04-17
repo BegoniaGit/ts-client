@@ -8,6 +8,7 @@ import site.yan.app.model.UserDO;
 import site.yan.app.service.Myservice;
 import site.yan.httpclient.builder.HttpClientBuilder;
 import site.yan.httpclient.builder.TargetLocationType;
+import site.yan.local.advice.RowTrace;
 
 @RestController
 @RequestMapping("/")
@@ -85,6 +86,9 @@ public class AppleAPI {
         userDO.setPwd("123456");
         userDao.save(userDO);
         userDao.findAll();
+        RowTrace.start("haha");
+        System.out.println("dd");
+        RowTrace.end("enen");
     }
 
 }
