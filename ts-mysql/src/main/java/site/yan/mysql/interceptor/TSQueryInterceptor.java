@@ -41,11 +41,10 @@ public class TSQueryInterceptor implements QueryInterceptor {
         }
     };
 
-    private static final Logger LOG = LoggerFactory.getLogger(TSQueryInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(TSQueryInterceptor.class);
 
     @Override
     public QueryInterceptor init(MysqlConnection conn, Properties props, Log log) {
-        LOG.info("query init success" + Thread.currentThread().getId());
         return new TSQueryInterceptor();
     }
 

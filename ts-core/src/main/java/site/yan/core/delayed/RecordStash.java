@@ -9,6 +9,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.yan.core.cache.TraceCache;
+import site.yan.core.configer.TSProperties;
 import site.yan.core.data.Record;
 
 import java.io.IOException;
@@ -18,6 +19,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.DelayQueue;
 
+/**
+ * 延时队列作为 record 暂存区
+ */
 public class RecordStash {
     private static volatile Map<String, Record> recordMap = new HashMap<>(64);
     private static volatile DelayQueue<RecordDelayed> recordQueue = new DelayQueue();
@@ -60,7 +64,7 @@ public class RecordStash {
     public static void send() {
         new Thread(() -> {
             logger.info("record stash send thread start");
-            final String url = "http://hw.yanyan.site:56/report";
+            final String url = TSProperties.getAutoReportUrl();
             while (true) {
                 List recordList = TraceCache.getTraceRecord();
                 if (recordList.size() != 0) {

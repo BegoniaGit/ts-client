@@ -3,7 +3,9 @@ package site.yan.core.api;
 import org.springframework.web.bind.annotation.GetMapping;
 import site.yan.core.cache.TraceCache;
 
-
+/**
+ * 上报数据API
+ */
 public class ExportAPI extends AbstractExportAPI {
 
     @GetMapping("/trace")
@@ -11,8 +13,8 @@ public class ExportAPI extends AbstractExportAPI {
         RespModel respModel = null;
         try {
             respModel = RespModel.ok(TraceCache.getTraceRecord());
-        } catch (Exception e) {
-            respModel = RespModel.error("this a api for export data about trace record. ");
+        } catch (Exception exc) {
+            respModel = RespModel.error();
         } finally {
             return respModel;
         }

@@ -13,11 +13,10 @@ import java.util.Properties;
 import static site.yan.mysql.interceptor.TSQueryInterceptor.mysqlRecord;
 
 public class TSExceptionInterceptor implements ExceptionInterceptor {
-    private static final Logger LOG = LoggerFactory.getLogger(TSExceptionInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(TSExceptionInterceptor.class);
 
     @Override
     public ExceptionInterceptor init(Properties props, Log log) {
-        LOG.info("exception init success" + Thread.currentThread().getId());
         return new TSExceptionInterceptor();
     }
 
@@ -27,7 +26,7 @@ public class TSExceptionInterceptor implements ExceptionInterceptor {
 
     @Override
     public Exception interceptException(Exception sqlEx) {
-        LOG.error("has error", sqlEx);
+        logger.error("has error", sqlEx);
         Record record = RecordStash.getById(mysqlRecord.get().getId()).orElse(new Record(true));
         record.putAdditionalPair(MysqlPairType.EXCEPTION.text(), sqlEx.getMessage());
         record.setError(true);

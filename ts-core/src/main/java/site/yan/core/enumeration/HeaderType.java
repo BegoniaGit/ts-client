@@ -1,5 +1,8 @@
 package site.yan.core.enumeration;
 
+/**
+ * HTTP 头信息常量
+ */
 public enum HeaderType {
     TS_TRACE_ID("ts-trace-id"),
     TS_ID("ts-id"),

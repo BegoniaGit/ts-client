@@ -17,10 +17,7 @@ import site.yan.httpclient.model.ClientResp;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class TSHttpClientOUT extends AbstractHttpClient {
 
@@ -30,8 +27,9 @@ public class TSHttpClientOUT extends AbstractHttpClient {
     private URL remoteUrl;
     private TargetLocationType targetLocationType;
 
-    public void setTargetLocationType(TargetLocationType targetLocationType) {
+    public TSHttpClientOUT setTargetLocationType(TargetLocationType targetLocationType) {
         this.targetLocationType = targetLocationType;
+        return this;
     }
 
     @Override
@@ -60,9 +58,9 @@ public class TSHttpClientOUT extends AbstractHttpClient {
     }
 
     @Override
-    public String doPost(String httpUrl, String params) {
+    public String doPost(String httpUrl, String body) {
         Record record = before(httpUrl, HttpMethodType.POST);
-        ClientResp resp = sendHttpPost(httpUrl, params);
+        ClientResp resp = sendHttpPost(httpUrl, body);
         after(resp, record);
         return resp.getRespStr();
     }
@@ -86,17 +84,9 @@ public class TSHttpClientOUT extends AbstractHttpClient {
         return record;
     }
 
-    private void parasUrl(String urlString) {
-        try {
-            this.remoteUrl = new URL(urlString);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     private void after(ClientResp clientResp, Record record) {
-        if(this.targetLocationType.equals(TargetLocationType.INTERNAL)&&Objects.isNull(clientResp.getException())){
+        if (this.targetLocationType.equals(TargetLocationType.INTERNAL) && Objects.isNull(clientResp.getException())) {
             RecordContextHolder.lastIdGetAndSet(clientResp.getId());
             return;
         }
@@ -121,4 +111,14 @@ public class TSHttpClientOUT extends AbstractHttpClient {
 
         TraceCache.put(record);
     }
+
+    private void parasUrl(String urlString) {
+        try {
+            this.remoteUrl = new URL(urlString);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

@@ -1,5 +1,8 @@
 package site.yan.core.interceptor;
 
+import site.yan.core.adapter.Holder;
+import site.yan.core.adapter.HttpContextAdapter;
+
 /**
  * The {@code TsInterceptor} class
  *
@@ -7,7 +10,8 @@ package site.yan.core.interceptor;
  * @date 2020-4-7
  */
 public interface TsInterceptor {
-    void tsPre();
+    Holder tsPre(Holder holder);
 
-    void tsPost();
+    void tsPost(Holder holder);
+
 }

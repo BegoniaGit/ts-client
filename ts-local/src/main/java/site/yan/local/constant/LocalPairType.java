@@ -5,7 +5,8 @@ public enum LocalPairType {
     EXCEPTION("exception"),
     METHOD_NAME("method name"),
     RETURN_TYPE("return type"),
-    RETURN_VALUE("return value");
+    RETURN_VALUE("return value"),
+    DESCRIPTION("description");
     private final String value;
 
     LocalPairType(String s) {

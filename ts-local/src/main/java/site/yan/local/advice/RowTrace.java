@@ -6,6 +6,7 @@ import site.yan.core.data.Record;
 import site.yan.core.enumeration.NoteType;
 import site.yan.core.helper.RecordContextHolder;
 import site.yan.core.utils.TimeStamp;
+import site.yan.local.constant.LocalPairType;
 
 import java.util.Objects;
 
@@ -13,7 +14,7 @@ public class RowTrace {
 
     private static ThreadLocal<Record> CURRENT_ROW_RECORD;
 
-    public static void start(String description) {
+    public static void start(String name, String description) {
         CURRENT_ROW_RECORD = new ThreadLocal<Record>() {
             @Override
             protected Record initialValue() {
@@ -22,17 +23,18 @@ public class RowTrace {
         };
         Record record = CURRENT_ROW_RECORD.get();
         String parentId = Objects.isNull(RecordContextHolder.getParentId()) ? RecordContextHolder.getServiceId() : RecordContextHolder.getParentId();
-        record.setName("row." + description)
-                .setParentId(parentId);
+        record.setName("row." + name)
+                .setParentId(parentId)
+                .putAdditionalPair(LocalPairType.DESCRIPTION.text(), description);
     }
 
-    public static void end(String description) {
+    public static void end() {
         Record record = CURRENT_ROW_RECORD.get();
         long currentStamp = TimeStamp.stamp();
         record.setDurationTime(currentStamp - record.getStartTimeStamp());
         Note startNote = new Note(NoteType.LOCAL_START.text(), record.getStartTimeStamp(), RecordContextHolder.getHost());
-        record.addNotePair(startNote);
-        record.addNotePair(new Note(NoteType.LOCAL_END.text(), currentStamp, RecordContextHolder.getHost()));
+        Note endNote = new Note(NoteType.LOCAL_END.text(), currentStamp, RecordContextHolder.getHost());
+        record.addNotePair(startNote, endNote);
         TraceCache.put(new Record(record));
         record.clear();
     }

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class HttpContext implements Holder {
+public class HttpContextAdapter implements Holder {
 
     private boolean hasException;
     private Exception exception;
@@ -21,7 +21,7 @@ public class HttpContext implements Holder {
     private ServletResponse servletResponse;
     private FilterChain filterChain;
 
-    public HttpContext(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {
+    public HttpContextAdapter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {
         this.httpServletRequest = (HttpServletRequest) servletRequest;
         this.httpServletResponse = (HttpServletResponse) servletResponse;
         this.servletRequest = servletRequest;

@@ -7,6 +7,9 @@ import site.yan.core.data.Record;
 
 import java.util.Objects;
 
+/**
+ * 该状态类保存了当前 http 服务基本信息，子 record 可以从此类获取该有的信息
+ */
 public class RecordContextHolder {
 
     private static final ThreadLocal<Record> CURRENT_SERVER_RECORD = new ThreadLocal<Record>() {

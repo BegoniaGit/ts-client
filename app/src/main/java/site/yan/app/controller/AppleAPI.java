@@ -8,6 +8,7 @@ import site.yan.app.model.UserDO;
 import site.yan.app.service.Myservice;
 import site.yan.httpclient.builder.HttpClientBuilder;
 import site.yan.httpclient.builder.TargetLocationType;
+import site.yan.httpclient.client.TSHttpClientOUT;
 import site.yan.local.advice.RowTrace;
 
 @RestController
@@ -44,7 +45,7 @@ public class AppleAPI {
     @GetMapping("/inner/server")
     public String innerServer() {
 
-        try{
+        try {
             HttpClientBuilder.builder().targetLocation(TargetLocationType.EXTERNAL)
                     .build().doGet("http://baidu.com");
         } catch (Exception e) {
@@ -64,19 +65,12 @@ public class AppleAPI {
     @PutMapping("/tri")
     public void taskTrigger() throws Exception {
 
-        new Thread(()->{
-            HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
-                    .build().doGet("http://127.0.0.1:8080/inner/server");
-        }).start();
+        new TSHttpClientOUT().setTargetLocationType(TargetLocationType.INTERNAL)
+                .doGet("http://127.0.0.1:8080/inner/server");
 
-        HttpClientBuilder.builder().targetLocation(TargetLocationType.INTERNAL)
-                .build().doGet("http://127.0.0.1:8080/inner/server");
+        new TSHttpClientOUT().setTargetLocationType(TargetLocationType.EXTERNAL)
+                .doGet("http://baidu.com");
 
-        try {
-            HttpClientBuilder.builder().targetLocation(TargetLocationType.EXTERNAL)
-                    .build().doGet("http://baidu.com");
-        } catch (Exception e) {
-        }
 
         myservice.getName("2", 2);
 
@@ -86,9 +80,9 @@ public class AppleAPI {
         userDO.setPwd("123456");
         userDao.save(userDO);
         userDao.findAll();
-        RowTrace.start("haha");
+        RowTrace.start("一行代码", "ha ");
         System.out.println("dd");
-        RowTrace.end("enen");
+        RowTrace.end();
     }
 
 }

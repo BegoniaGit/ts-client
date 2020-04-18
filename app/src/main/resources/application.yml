@@ -10,5 +10,9 @@ server:
 
 ts:
   enable: true
+  autoReport: true
+  autoReportUrl: http://114.116.251.70:56/report
   server-name: Java-application
   stage: beta
+  traceIgnoreUrls:
+    - /favicon.ico

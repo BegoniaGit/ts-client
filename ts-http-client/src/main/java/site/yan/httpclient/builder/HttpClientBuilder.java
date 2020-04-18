@@ -5,9 +5,11 @@ import site.yan.httpclient.client.AbstractHttpClient;
 import site.yan.httpclient.client.TSHttpClientIN;
 import site.yan.httpclient.client.TSHttpClientOUT;
 
+import java.util.function.Function;
+
 public class HttpClientBuilder {
 
-    private TSHttpClientOUT httpClient;
+    private AbstractHttpClient httpClient;
 
     private HttpClientBuilder() {
         // Nothing to do.
@@ -18,9 +20,7 @@ public class HttpClientBuilder {
     }
 
     public HttpClientBuilder targetLocation(TargetLocationType type) {
-
         this.httpClient =  new TSHttpClientOUT();
-        this.httpClient.setTargetLocationType(type);
         return this;
     }
 
