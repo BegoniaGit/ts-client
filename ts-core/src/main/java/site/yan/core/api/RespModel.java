@@ -1,9 +1,9 @@
 package site.yan.core.api;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+//import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RespModel<T> implements Serializable {
 
     private int code;

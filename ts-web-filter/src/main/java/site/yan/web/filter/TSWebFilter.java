@@ -14,7 +14,8 @@ import site.yan.core.enumeration.NoteType;
 import site.yan.core.helper.RecordContextHolder;
 import site.yan.core.interceptor.TsInterceptor;
 import site.yan.core.utils.IdGeneratorHelper;
-import site.yan.core.utils.TimeStamp;
+import site.yan.core.utils.RandomUtil;
+import site.yan.core.utils.TimeUtil;
 import site.yan.web.constant.TraceIgnoreType;
 import site.yan.web.constant.WebFilterPairType;
 
@@ -54,10 +55,14 @@ public class TSWebFilter implements Filter, TsInterceptor {
         try {
             filterChain.doFilter(servletRequest, servletResponse);
             httpContextAdapter.setHasException(false);
-        } catch (Exception exc) {
+        } catch (ServletException exc) {
             httpContextAdapter.setHasException(true);
             httpContextAdapter.setException(exc);
             throw exc;
+        } catch (IOException exc2) {
+            httpContextAdapter.setHasException(true);
+            httpContextAdapter.setException(exc2);
+            throw exc2;
         } finally {
             // 处理后操作
             tsPost(httpContextAdapter);
@@ -74,7 +79,6 @@ public class TSWebFilter implements Filter, TsInterceptor {
         HttpContextAdapter httpContextAdapter = (HttpContextAdapter) holder;
         // 获取当前 HTTP 服务顶级 Trace Record
         Record record = RecordContextHolder.getCurrentServerRecord();
-        boolean tr=httpContextAdapter.isNewTrace();
         String traceId = httpContextAdapter.isNewTrace() ? IdGeneratorHelper.idLen32Generat() : httpContextAdapter.getTraceId();
         String parentId = httpContextAdapter.getId();
 
@@ -82,7 +86,7 @@ public class TSWebFilter implements Filter, TsInterceptor {
                 .setParentId(parentId)
                 .setIdNotLastId(IdGeneratorHelper.idLen32Generat())
                 .setName(httpContextAdapter.getName())
-                .setStartTimeStamp(TimeStamp.stamp())
+                .setStartTimeStamp(TimeUtil.stamp())
                 .setServerName(TSProperties.getServerName())
                 .setStage(TSProperties.getStage());
         return httpContextAdapter;
@@ -91,7 +95,7 @@ public class TSWebFilter implements Filter, TsInterceptor {
     @Override
     public void tsPost(Holder holder) {
         HttpContextAdapter httpContextAdapter = (HttpContextAdapter) holder;
-        long currentStamp = TimeStamp.stamp();
+        long currentStamp = TimeUtil.stamp();
         Record record = RecordContextHolder.getCurrentServerRecord();
         record.setDurationTime(currentStamp - record.getStartTimeStamp());
         record.setError(httpContextAdapter.isHasException());
@@ -115,6 +119,16 @@ public class TSWebFilter implements Filter, TsInterceptor {
     }
 
     private boolean traceIgnore(ServletRequest request) {
+        String open = ((HttpServletRequest) request).getHeader(HeaderType.TS_TRACE_OPEN.text());
+        if (open != null) {
+            return "true".equals(open);
+        }
+        if (RandomUtil.getRandom().nextDouble() < TSProperties.getSamplingRate()) {
+            RecordContextHolder.updateCurrentRecordState(true);
+        } else {
+            RecordContextHolder.updateCurrentRecordState(false);
+            return false;
+        }
         HttpServletRequest servletRequest = (HttpServletRequest) request;
         String path = null;
         try {

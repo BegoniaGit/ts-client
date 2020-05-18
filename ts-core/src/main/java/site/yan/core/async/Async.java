@@ -1,6 +1,6 @@
 package site.yan.core.async;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+//import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import site.yan.core.helper.RecordContextHolder;
 
 public abstract class Async extends Thread{

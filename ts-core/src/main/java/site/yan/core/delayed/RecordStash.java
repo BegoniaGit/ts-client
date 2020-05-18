@@ -1,16 +1,19 @@
 package site.yan.core.delayed;
 
 import com.google.gson.Gson;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import site.yan.core.cache.TraceCache;
 import site.yan.core.configer.TSProperties;
 import site.yan.core.data.Record;
+import site.yan.core.utils.SpringUtil;
+import site.yan.core.utils.TimeUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,7 +28,6 @@ import java.util.concurrent.DelayQueue;
 public class RecordStash {
     private static volatile Map<String, Record> recordMap = new HashMap<>(64);
     private static volatile DelayQueue<RecordDelayed> recordQueue = new DelayQueue();
-
     private static Logger logger = LoggerFactory.getLogger(RecordStash.class);
 
     public static Optional<Record> getById(String id) {
@@ -45,6 +47,9 @@ public class RecordStash {
         recordQueue.offer(new RecordDelayed(record));
     }
 
+    /**
+     * Receive record from stash
+     */
     public static void receive() {
         new Thread(() -> {
             logger.info("record stash receive thread start");
@@ -61,35 +66,51 @@ public class RecordStash {
         }).start();
     }
 
+    private void jj() {
+    }
+
+
+    /**
+     * Main report
+     */
     public static void send() {
         new Thread(() -> {
-            logger.info("record stash send thread start");
+            logger.info("Record stash send thread start");
+
             final String url = TSProperties.getAutoReportUrl();
+            final String rabbitmqConst = "rabbitmq";
+            final String nativeConst = "native";
+
+            AmqpTemplate amqpTemplate = SpringUtil.getBean(RabbitTemplate.class);
+            String model = TSProperties.getMode().toLowerCase();
+            if (!(TSProperties.isAutoReport() &&
+                    (rabbitmqConst.equals(model) ||
+                            nativeConst.equals(model)))) {
+                logger.error("Abnormally report abnormal configuration parameters");
+                return;
+            }
+
             while (true) {
                 List recordList = TraceCache.getTraceRecord();
                 if (recordList.size() != 0) {
-                    CloseableHttpClient httpClient = HttpClients.createDefault();
-                    HttpPost httpPost = new HttpPost(url);
                     String body = new Gson().toJson(recordList);
-                    System.out.println(body);
-                    StringEntity stringEntity = new StringEntity(body, "UTF-8");
-                    httpPost.setEntity(stringEntity);
-                    CloseableHttpResponse response = null;
-                    try {
-                        logger.info("will report...");
-                        response = httpClient.execute(httpPost);
-                        logger.info("report 200");
-                    } catch (IOException e) {
-                        logger.info("report error");
-                        e.printStackTrace();
+                    if (rabbitmqConst.equals(model)) {
+                        amqpTemplate.convertAndSend(TSProperties.getQueueName(), body);
+                    } else if (nativeConst.equals(model)) {
+                        CloseableHttpClient httpClient = HttpClients.createDefault();
+                        HttpPost httpPost = new HttpPost(url);
+                        StringEntity stringEntity = new StringEntity(body, "UTF-8");
+                        httpPost.setEntity(stringEntity);
+                        try {
+                            httpClient.execute(httpPost);
+                            logger.error("native report 200");
+                        } catch (IOException e) {
+                            logger.info("native report error");
+                            e.printStackTrace();
+                        }
                     }
                 }
-
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                TimeUtil.sleep(TSProperties.getTimePeriod());
             }
         }).start();
     }

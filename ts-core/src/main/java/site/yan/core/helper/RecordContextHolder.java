@@ -1,9 +1,10 @@
 package site.yan.core.helper;
 
-import org.apache.logging.log4j.util.Strings;
 import site.yan.core.data.Host;
 import site.yan.core.data.LastId;
+import site.yan.core.data.Pack;
 import site.yan.core.data.Record;
+import site.yan.core.utils.StringUtil;
 
 import java.util.Objects;
 
@@ -18,6 +19,12 @@ public class RecordContextHolder {
             return new Record(true);
         }
     };
+    private static final ThreadLocal<Pack<Boolean>> CURRENT_OPEN = new ThreadLocal<Pack<Boolean>>() {
+        @Override
+        protected Pack<Boolean> initialValue() {
+            return Pack.create(true);
+        }
+    };
     private static final ThreadLocal<LastId> LAST_ID = new ThreadLocal<LastId>() {
         @Override
         protected LastId initialValue() {
@@ -25,19 +32,9 @@ public class RecordContextHolder {
         }
     };
 
-    private static String parentId;
-
     private static Host host;
 
     private static String stage;
-
-    public static String getParentId() {
-        return parentId;
-    }
-
-    public static void setParentId(String parentId) {
-        RecordContextHolder.parentId = parentId;
-    }
 
     public static String getStage() {
         return stage;
@@ -83,12 +80,20 @@ public class RecordContextHolder {
         return CURRENT_SERVER_RECORD.get();
     }
 
+    public static Boolean getCurrentOpenState() {
+        return CURRENT_OPEN.get().getValue();
+    }
+
+    public static void updateCurrentRecordState(boolean state) {
+        CURRENT_OPEN.get().update(state);
+    }
+
     public String getServerRecordId() {
         return CURRENT_SERVER_RECORD.get().getId();
     }
 
     public static boolean hasLastId() {
-        return Strings.isNotBlank(RecordContextHolder.LAST_ID.get().getLastId());
+        return StringUtil.isNotBlank(RecordContextHolder.LAST_ID.get().getLastId());
     }
 
     public static String lastIdGetAndSet(String id) {
@@ -101,7 +106,6 @@ public class RecordContextHolder {
         System.out.println();
         return lastId;
     }
-
 
     public void clear() {
         CURRENT_SERVER_RECORD.remove();

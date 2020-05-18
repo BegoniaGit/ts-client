@@ -11,7 +11,19 @@
 
     <artifactId>ts-web-filter</artifactId>
     <packaging>jar</packaging>
-<dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>6</source>
+                    <target>6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
     <dependency>
         <groupId>site.yan</groupId>
         <artifactId>ts-core</artifactId>

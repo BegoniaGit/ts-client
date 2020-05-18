@@ -2,17 +2,20 @@ package site.yan.core.configer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import site.yan.core.api.ExportAPI;
+import site.yan.core.api.TraceApiBoot;
 import site.yan.core.data.Host;
 import site.yan.core.delayed.RecordStash;
 import site.yan.core.helper.RecordContextHolder;
-import site.yan.core.utils.TimeStamp;
+import site.yan.core.utils.SpringUtil;
+import site.yan.core.utils.TimeUtil;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -30,60 +33,73 @@ public class Boot {
 
     Logger logger = LoggerFactory.getLogger(Boot.class);
 
-    // register export Api "/trace"
     @Bean
-    public ExportAPI exportAPI() {
-        return new ExportAPI();
+    public ApplicationContextAware applicationContextAware() {
+        return new SpringUtil();
     }
 
     @Bean
-    public RecordContextHolder recordContextHolder() {
-        long startStamp = TimeStamp.stamp();
+    public RecordContextHolder recordContextHolder() throws Exception {
+        long startStamp = TimeUtil.stamp();
         if (properties.isEnable() == false) {
-            logger.info("追踪系统被禁止启动 !");
+            logger.info("The tracking system is forbidden to start!");
             return null;
         }
-        logger.info("追踪系统开始启动...");
-        // 设置配置参数值
+        logger.info("The tracking system starts...");
+        // Set configuration parameter values
         TSProperties.setValues(properties);
         if (!checkProperties()) {
-            return null;
+            logger.info("parameter configuration error，tracking system termination");
+            throw new Exception("parameter configuration error，tracking system termination");
         }
 
-        // 获取本机 ip
+        // Get local ip
         InetAddress address = null;
         try {
             address = InetAddress.getLocalHost();
         } catch (UnknownHostException exc) {
-            logger.error("获取本级通信地址异常", exc);
-            exc.printStackTrace();
+            logger.error("Abnormal access to this level of communication address", exc);
+            throw exc;
         }
 
         // config the server information
         Host serverHost = new Host(TSProperties.getServerName(), address.getHostAddress(), serverPort);
         RecordContextHolder.setHost(serverHost);
         RecordContextHolder.setStage(TSProperties.getStage());
-        logger.info("获取本级通信地址完成");
+        logger.info("Complete the communication address of this host");
 
-        // 延迟队列数据转移到疾苦缓存区线程启动
+        // register export Api "/trace"
+        if (!TSProperties.isAutoReport()) {
+            TraceApiBoot.start(TSProperties.getTracePort());
+        }
+
+        // Delaying the transfer of queue data to the start of the thread in the painful cache
         RecordStash.receive();
 
-        // 主动上报数据线程
+        // Actively report data thread
         if (TSProperties.isAutoReport()) {
-            logger.info("启动主动上报记录数据线程完成");
+            if ("native".equals(TSProperties.getMode()) && !TSProperties.getAutoReportUrl().startsWith("http")) {
+                logger.info("incorrectly reported data address setting error");
+            }
             RecordStash.send();
+            logger.info("Finish to start the active report data logging thread");
         }
-        logger.info("追踪系统基础配置启动成功，耗时 " + (TimeStamp.stamp() - startStamp) + " 毫秒");
+        logger.info("The basic configuration of the tracking system started successfully，time consuming " + (TimeUtil.stamp() - startStamp) + " ms");
         return new RecordContextHolder();
     }
 
     private boolean checkProperties() {
 
         if (TSProperties.isAutoReport() && !TSProperties.getAutoReportUrl().startsWith("http")) {
-            logger.error("配置参数检查:主动上报数据应设置正确的上报url链接");
+            logger.error("Configuration parameter check: Active reporting data should be set to the correct reporting URL link");
             return false;
         }
-        logger.info("配置参数检查完成");
+        logger.info("Complete configuration parameter check");
         return true;
+    }
+
+    @Bean
+    public Queue Queue() {
+        return new Queue(TSProperties.getQueueName());
     }
 }

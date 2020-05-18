@@ -9,7 +9,7 @@ import site.yan.core.data.Record;
 import site.yan.core.enumeration.NoteType;
 import site.yan.core.helper.RecordContextHolder;
 import site.yan.core.utils.ReflectUtil;
-import site.yan.core.utils.TimeStamp;
+import site.yan.core.utils.TimeUtil;
 import site.yan.local.constant.LocalPairType;
 
 import java.lang.reflect.Method;
@@ -26,15 +26,14 @@ public abstract class AbstractMethodTracedAdvice {
     @Around("pointcut()")
     public Object process(ProceedingJoinPoint pjp) throws Throwable {
 
-        Record record = Record.createClientRecord();
-        String traceId = RecordContextHolder.getTraceId();
-        if (traceId == null) {
+        if (!RecordContextHolder.getCurrentOpenState()) {
             return pjp.proceed();
         } else {
+            Record record = Record.createClientRecord();
             MethodSignature signature = (MethodSignature) pjp.getSignature();
             Method method = signature.getMethod();
 
-            String parentId = Objects.isNull(RecordContextHolder.getParentId()) ? RecordContextHolder.getServiceId() : RecordContextHolder.getParentId();
+            String parentId = RecordContextHolder.getServiceId();
             record.setName("method." + method.getName())
                     .setParentId(parentId);
             record.putAdditionalPair(LocalPairType.METHOD_NAME.text(), method.getName());
@@ -49,19 +48,11 @@ public abstract class AbstractMethodTracedAdvice {
             if (args.length == 0) {
                 argValue = "null";
             } else {
-                argValueBuilder = new StringBuilder("(");
-
-                for (int i = 0; i < args.length; ++i) {
-                    argValueBuilder.append(ReflectUtil.argToString(args[i]));
-                    if (i < args.length - 1) {
-                        argValueBuilder.append(",");
-                    }
-                }
-                argValueBuilder.append(")");
-                argValue = argValueBuilder.toString();
+                argValue = argsToString(args);
             }
             record.putAdditionalPair(LocalPairType.ARGS.text(), argValue);
 
+            // 执行具体的方法
             Object result = null;
             try {
                 result = pjp.proceed();
@@ -70,7 +61,7 @@ public abstract class AbstractMethodTracedAdvice {
                 record.putAdditionalPair(LocalPairType.EXCEPTION.text(), exc.getMessage());
                 throw exc;
             } finally {
-                long currentTime = TimeStamp.stamp();
+                long currentTime = TimeUtil.stamp();
                 record.setDurationTime(currentTime - record.getStartTimeStamp());
                 record.putAdditionalPair(LocalPairType.RETURN_VALUE.text(), Objects.isNull(result) ? null : result.toString());
                 record.addNotePair(new Note(NoteType.LOCAL_END.text(), currentTime, RecordContextHolder.getHost()));
@@ -78,6 +69,19 @@ public abstract class AbstractMethodTracedAdvice {
             }
             return result;
         }
+    }
+
+    private String argsToString(Object[] args) {
+        StringBuilder argValueBuilder = new StringBuilder("(");
+
+        for (int i = 0; i < args.length; ++i) {
+            argValueBuilder.append(ReflectUtil.argToString(args[i]));
+            if (i < args.length - 1) {
+                argValueBuilder.append(",");
+            }
+        }
+        argValueBuilder.append(")");
+        return argValueBuilder.toString();
     }
 }
 

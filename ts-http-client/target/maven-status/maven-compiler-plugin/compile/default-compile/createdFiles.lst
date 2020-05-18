@@ -1,0 +1,6 @@
+site/yan/httpclient/model/ClientResp.class
+site/yan/httpclient/client/AbstractHttpClient.class
+site/yan/httpclient/constant/HttpClientPairType.class
+site/yan/httpclient/builder/HttpClientBuilder.class
+site/yan/httpclient/client/TsHttpClient.class
+site/yan/httpclient/builder/TargetLocationType.class

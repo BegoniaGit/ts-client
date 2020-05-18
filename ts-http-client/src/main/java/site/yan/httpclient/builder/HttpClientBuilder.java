@@ -2,10 +2,7 @@ package site.yan.httpclient.builder;
 
 import org.apache.http.Header;
 import site.yan.httpclient.client.AbstractHttpClient;
-import site.yan.httpclient.client.TSHttpClientIN;
-import site.yan.httpclient.client.TSHttpClientOUT;
-
-import java.util.function.Function;
+import site.yan.httpclient.client.TsHttpClient;
 
 public class HttpClientBuilder {
 
@@ -20,7 +17,7 @@ public class HttpClientBuilder {
     }
 
     public HttpClientBuilder targetLocation(TargetLocationType type) {
-        this.httpClient =  new TSHttpClientOUT();
+        this.httpClient =  new TsHttpClient();
         return this;
     }
 

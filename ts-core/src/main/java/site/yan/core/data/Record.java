@@ -1,10 +1,11 @@
 package site.yan.core.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.logging.log4j.util.Strings;
+import site.yan.core.configer.TSProperties;
 import site.yan.core.helper.RecordContextHolder;
 import site.yan.core.utils.IdGeneratorHelper;
-import site.yan.core.utils.TimeStamp;
+import site.yan.core.utils.StringUtil;
+import site.yan.core.utils.TimeUtil;
 
 import java.util.*;
 
@@ -22,6 +23,8 @@ public class Record {
     private Long startTimeStamp;
 
     private Long durationTime;
+
+    private double samplingRate;
 
     private boolean error;
 
@@ -95,9 +98,10 @@ public class Record {
      */
     private void init() {
         this.setError(false);
-        this.setStartTimeStamp(TimeStamp.stamp());
+        this.setStartTimeStamp(TimeUtil.stamp());
         this.setNotePair(new ArrayList(2));
         this.setAdditionalPair(new HashMap(16));
+        this.setSamplingRate(TSProperties.getSamplingRate());
     }
 
     public boolean isError() {
@@ -145,7 +149,7 @@ public class Record {
     }
 
     public Record setParentId(String parentId) {
-        if (Strings.isNotBlank(parentId)) {
+        if (StringUtil.isNotBlank(parentId)) {
             this.parentId = parentId;
         }
         return this;
@@ -222,5 +226,13 @@ public class Record {
     public Record addNotePair(Note... v) {
         this.notePair.addAll(Arrays.asList(v));
         return this;
+    }
+
+    public double getSamplingRate() {
+        return samplingRate;
+    }
+
+    public void setSamplingRate(double samplingRate) {
+        this.samplingRate = samplingRate;
     }
 }

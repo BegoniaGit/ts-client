@@ -17,7 +17,7 @@ import site.yan.core.delayed.RecordStash;
 import site.yan.core.enumeration.NoteType;
 import site.yan.core.helper.RecordContextHolder;
 import site.yan.core.utils.IdGeneratorHelper;
-import site.yan.core.utils.TimeStamp;
+import site.yan.core.utils.TimeUtil;
 import site.yan.mysql.constant.MysqlPairType;
 
 import java.util.Objects;
@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class TSQueryInterceptor implements QueryInterceptor {
 
-    private static final String[] filterRegex = {"set autocommit","set session", "commit",};
+    private static final String[] filterRegex = {"set autocommit", "set session", "commit",};
     private static final String DEFAULT_SERVICE_NAME = "mysql.";
     private static final String SELECT = "select";
     private static final String UPDATE = "update";
@@ -59,7 +59,7 @@ public class TSQueryInterceptor implements QueryInterceptor {
                 .setParentId(RecordContextHolder.getServiceId())
                 .setServerName(RecordContextHolder.getServerName())
                 .setStage(RecordContextHolder.getStage())
-                .setStartTimeStamp(TimeStamp.stamp())
+                .setStartTimeStamp(TimeUtil.stamp())
                 .setName(DEFAULT_SERVICE_NAME + getTypeName(sql));
         return null;
     }
@@ -70,7 +70,7 @@ public class TSQueryInterceptor implements QueryInterceptor {
             return null;
         }
         Record record = mysqlRecord.get();
-        long currentTime = TimeStamp.stamp();
+        long currentTime = TimeUtil.stamp();
         String mysqlServerName = interceptedQuery.getSession().getHostInfo().getHostProperties().get("serverName");
         record.setDurationTime(currentTime - record.getStartTimeStamp());
         HostInfo hostInfo = interceptedQuery.getSession().getHostInfo();
@@ -91,6 +91,10 @@ public class TSQueryInterceptor implements QueryInterceptor {
     }
 
     private boolean intercept(Supplier<String> sql) {
+        if (!RecordContextHolder.getCurrentOpenState()) {
+            return false;
+        }
+
         if (sql.get() == null) {
             return false;
         }

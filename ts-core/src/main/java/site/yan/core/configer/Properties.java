@@ -3,18 +3,27 @@ package site.yan.core.configer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.List;
-
 @Component
 @ConfigurationProperties(prefix = "ts", ignoreUnknownFields = true)
 public class Properties {
 
     private boolean enable = false;
 
+    private int tracePort =6060;
+
+    // 采样率 0-1 之间
+    private double samplingRate = 1.0;
+
     private boolean autoReport = false;
 
     private String autoReportUrl = "";
+
+    private long timePeriod = 5000L;
+
+    // rabbitmq or native
+    private String mode = "native";
+
+    private String queueName = "trace-data-queue";
 
     private String serverName = "Unknown server";
 
@@ -31,12 +40,44 @@ public class Properties {
         this.enable = enable;
     }
 
+    public double getSamplingRate() {
+        return samplingRate;
+    }
+
+    public void setSamplingRate(double samplingRate) {
+        this.samplingRate = samplingRate;
+    }
+
     public boolean isAutoReport() {
         return autoReport;
     }
 
     public void setAutoReport(boolean autoReport) {
         this.autoReport = autoReport;
+    }
+
+    public long getTimePeriod() {
+        return timePeriod;
+    }
+
+    public void setTimePeriod(long timePeriod) {
+        this.timePeriod = timePeriod;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public String getQueueName() {
+        return queueName;
+    }
+
+    public void setQueueName(String queueName) {
+        this.queueName = queueName;
     }
 
     public String getAutoReportUrl() {
@@ -69,5 +110,13 @@ public class Properties {
 
     public void setTraceIgnoreUrls(String[] traceIgnoreUrls) {
         this.traceIgnoreUrls = traceIgnoreUrls;
+    }
+
+    public int getTracePort() {
+        return tracePort;
+    }
+
+    public void setTracePort(int tracePort) {
+        this.tracePort = tracePort;
     }
 }

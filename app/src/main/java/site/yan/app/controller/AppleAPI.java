@@ -2,13 +2,13 @@ package site.yan.app.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import site.yan.app.Repository.UserDao;
-import site.yan.app.model.Apple;
-import site.yan.app.model.UserDO;
+import site.yan.app.repository.UserDao;
+import site.yan.app.model.*;
 import site.yan.app.service.Myservice;
+import site.yan.core.utils.TimeUtil;
 import site.yan.httpclient.builder.HttpClientBuilder;
 import site.yan.httpclient.builder.TargetLocationType;
-import site.yan.httpclient.client.TSHttpClientOUT;
+import site.yan.httpclient.client.TsHttpClient;
 import site.yan.local.advice.RowTrace;
 
 @RestController
@@ -45,17 +45,14 @@ public class AppleAPI {
     @GetMapping("/inner/server")
     public String innerServer() {
 
-        try {
-            HttpClientBuilder.builder().targetLocation(TargetLocationType.EXTERNAL)
-                    .build().doGet("http://baidu.com");
-        } catch (Exception e) {
-        }
+        new TsHttpClient().setTargetLocationType(TargetLocationType.EXTERNAL)
+                .doGet("http://163.com");
 
-        myservice.getName("2", 2);
+        myservice.getName("苏碧");
 
         UserDO userDO = new UserDO();
-        userDO.setName("ii");
-        userDO.setAccount("fengqy");
+        userDO.setName("苏碧");
+        userDO.setAccount("565435688");
         userDO.setPwd("123456");
         userDao.save(userDO);
         userDao.findAll();
@@ -65,23 +62,24 @@ public class AppleAPI {
     @PutMapping("/tri")
     public void taskTrigger() throws Exception {
 
-        new TSHttpClientOUT().setTargetLocationType(TargetLocationType.INTERNAL)
-                .doGet("http://127.0.0.1:8080/inner/server");
+        new TsHttpClient().setTargetLocationType(TargetLocationType.INTERNAL)
+                .doGet("http://114.116.251.70:8080/app/inner/server");
 
-        new TSHttpClientOUT().setTargetLocationType(TargetLocationType.EXTERNAL)
-                .doGet("http://baidu.com");
+        new TsHttpClient().setTargetLocationType(TargetLocationType.EXTERNAL)
+                .doGet("http://163.com");
 
 
-        myservice.getName("2", 2);
+        myservice.getName("柳岸溪");
 
         UserDO userDO = new UserDO();
-        userDO.setName("ii");
-        userDO.setAccount("fengqy");
+        userDO.setName("柳岸溪");
+        userDO.setAccount("31415926");
         userDO.setPwd("123456");
         userDao.save(userDO);
         userDao.findAll();
-        RowTrace.start("一行代码", "ha ");
-        System.out.println("dd");
+
+        RowTrace.start("一个行级代码拦截", "我是一个耗时的代码段");
+        TimeUtil.sleep(200);
         RowTrace.end();
     }
 

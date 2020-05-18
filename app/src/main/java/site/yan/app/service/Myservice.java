@@ -10,13 +10,13 @@ import java.util.Random;
 public class Myservice {
 
     @Traced
-    public String getName(String s, int n) {
+    public String getName(String s) {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        return s + "apple";
+        return s;
     }
 }

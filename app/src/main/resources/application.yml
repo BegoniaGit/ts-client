@@ -1,9 +1,20 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://cdb-rxranzeo.cd.tencentcdb.com:10084/ts?serverName=mysql-server&queryInterceptors=site.yan.mysql.interceptor.TSQueryInterceptor&exceptionInterceptors=site.yan.mysql.interceptor.TSExceptionInterceptor&useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://cdb-rxranzeo.cd.tencentcdb.com:10084/ts?serverName=chengdu-mysql&queryInterceptors=site.yan.mysql.interceptor.TSQueryInterceptor&exceptionInterceptors=site.yan.mysql.interceptor.TSExceptionInterceptor&useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: Ca66771111
+  rabbitmq:
+    password: guest
+    username: guest
+    port: 5672
+    addresses: aliyun.yanyan.site
+    #开启发送失败返回
+    publisher-returns: true
+    #支持消息的确认与返回
+    template:
+      mandatory: true
+
 
 server:
   port: 8080
@@ -11,8 +22,9 @@ server:
 ts:
   enable: true
   autoReport: true
-  autoReportUrl: http://114.116.251.70:56/report
-  server-name: Java-application
+  mode: rabbitmq
+  autoReportUrl: http://localhost:56/report
+  server-name: A-Server
   stage: beta
   traceIgnoreUrls:
     - /favicon.ico

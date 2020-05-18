@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我是一个复杂的页面</title>
+    <style>
+        body{
+            margin-left: 2em;
+        }
+        h1 {
+            font-family: "Microsoft YaHei", "Hiragino Sans GB";
+            font-weight: normal;
+            font-size: 3.5em;
+            color: tomato;
+        }
+
+        a {
+            font-family: "Microsoft YaHei", "Hiragino Sans GB";
+            font-weight: normal;
+            font-size: 1em;
+            color: #678bde;
+            cursor: pointer;
+
+        }
+    </style>
+</head>
+<body>
+<H1>
+    Hello , 我是一个复杂的页面 :)
+</H1>
+<a onclick="request()"><span>点击我，模拟一个请求</span></a>
+</body>
+<script>
+    function request() {
+        let record_req = new XMLHttpRequest();
+        record_req.onreadystatechange = function () {
+            if (record_req.readyState == 4 && record_req.status == 200) {
+                console.log(record_req.getAllResponseHeaders())
+            }
+        }
+        record_req.open("PUT","/app/tri", true)
+        record_req.send()
+    }
+
+</script>
+</html>
